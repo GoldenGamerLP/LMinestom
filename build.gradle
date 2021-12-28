@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+}
+
+group 'me.alex.Lminestom'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spongepowered.org/maven' }
+    maven { url 'https://jitpack.io' }
+    maven {
+        name = "sonatype-oss-snapshots"
+        url = "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+dependencies {
+    implementation 'com.github.Minestom:Minestom:-SNAPSHOT'
+    implementation "net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT"
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'me.alex.lminestom.start.LMinestom',
+                "Multi-Release": true
+    }
+}
