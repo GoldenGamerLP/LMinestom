@@ -43,7 +43,7 @@ public class LMinestom {
         LMinestomOptifinSupportImpl.initOptifineSupport();
         LMinestomBlockPlacementImpl.initBlockPlacementRules();
 
-        if (Boolean.getBoolean("lminestom.extensionmanager.enabled"))
+        if (Boolean.getBoolean(LMinestomDefaultValues.ExtensionManager.getIdentifier()))
             new LMinestomExtensionManager("extensionmanager", "exm");
         new LMinestomStopCommand("stop", "stopp", "halt");
     }

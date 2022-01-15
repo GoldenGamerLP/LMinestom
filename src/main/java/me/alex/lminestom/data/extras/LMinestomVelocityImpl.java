@@ -13,7 +13,7 @@ public class LMinestomVelocityImpl {
     private static final LMinestomConfig lMinestomConfig = LMinestom.getDefaultConfig();
 
     public static void initVelocitySupport() {
-        if (Boolean.getBoolean(lMinestomConfig.getConfigEntry(LMinestomDefaultValues.VelocityModeEnabled))) {
+        if (Boolean.getBoolean(LMinestomDefaultValues.VelocityModeEnabled.getIdentifier())) {
             String secret = lMinestomConfig.getConfigEntry(LMinestomDefaultValues.VelocitySecretKey);
 
             logger.info("Trying to enable VelocitySupport.");
