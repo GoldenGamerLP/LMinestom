@@ -2,21 +2,23 @@ package me.alex.lminestom.data.config;
 
 public enum LMinestomDefaultValues {
 
-    ChunkViewDistance("minestom.chunk-view-distance", "8"),
-    EntityViewDistance("minestom.entity-view-distance", "5"),
-    TerminalEnabled("minestom.terminal.disabled", "false"),
-    MaxTPS("minestom.tps", "20"),
-    SystemPort("minestom.port", "25565"),
-    SystemIP("minestom.ip", "0.0.0.0"),
-    OptifineSupportEnabled("lminestom.optifinesupport.enabled", "true"),
-    CustomDefaultWorldEnabled("lminestom.customdefaultworld", "false"),
-    DefaultWorldFolderName("lminestom.customworldfoldername", "yourename"),
-    IsOnlineModeEnabled("minestom.online-mode.enabled", "false"),
-    ServerMOTD("lminestom.motd", "LMinestom!"),
-    EnableExtensionManager("lminestom.extensionmanager.enabled", "true"),
-    VelocityModeEnabled("lminestom.velocity.enabled", "false"),
-    VelocityModeKey("lminestom.velocity.secret", "youresecretkey"),
-    MaxOnlinePlayers("lminestom.server.maxplayers","50");
+    SystemPort("port", "25565"),
+    SystemIP("ip-adress", "0.0.0.0"),
+    MaxTPS("tps", "20"),
+    MaxOnlinePlayers("max-players", "50"),
+    ChunkViewDistance("view-distance", "8"),
+    EntityViewDistance("entity-view-distance", "5"),
+    OptifineSupportEnabled("optifine-enabled", "true"),
+    BlockPlacementRuleEnabled("blockplacement-rules-enabled", "true"),
+    TerminalEnabled("terminal-enabled", "false"),
+    OnlineMode("online-mode", "true"),
+    CloudnetImpl("cloudnet-impl-enabled", "false"),
+    ExtensionManager("extension-manager-enabled", "true"),
+    VelocityModeEnabled("velocity.enabled", "true"),
+    VelocitySecretKey("velocity.secret", "yourKey"),
+    ServerMotd("motd", "This is L-Minestom!"),
+    CustomDefaultWorld("custom-default-world.enabled", "false"),
+    CustomDefaultWorldFolder("custom-default-world.folder", "yourFolder");
 
 
     private final String identifier;

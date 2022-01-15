@@ -1,17 +1,16 @@
 package me.alex.lminestom.data.chunkgenerator;
 
+import net.minestom.server.coordinate.Point;
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.ChunkGenerator;
 import net.minestom.server.instance.ChunkPopulator;
 import net.minestom.server.instance.batch.ChunkBatch;
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.world.biomes.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class DefaultVoidGenerator implements ChunkGenerator {
 
@@ -19,6 +18,7 @@ public class DefaultVoidGenerator implements ChunkGenerator {
     private final LMinestomNoise lNoise;
     private final LMinestomNoise riverTerrainNoise;
     private final Random Seed;
+    private final List<Pos> chunkList = Collections.synchronizedList(new ArrayList<>());
 
     public DefaultVoidGenerator() {
         this.Seed = new Random(22112005);
@@ -29,10 +29,12 @@ public class DefaultVoidGenerator implements ChunkGenerator {
 
     @Override
     public void generateChunkData(@NotNull ChunkBatch batch, int chunkX, int chunkZ) {
+        List<Pos> water = new ArrayList<>();
         for (int x = 0; x < Chunk.CHUNK_SIZE_X; x++) {
             for (int z = 0; z < Chunk.CHUNK_SIZE_Z; z++) {
                 int posX = chunkX * 16 + x;
                 int posZ = chunkZ * 16 + z;
+
 
                 var e = (1.00 * overN.GetNoise(1 * posX, 1 * posZ)
                         + 0.50 * overN.GetNoise(2 * posX, 2 * posZ)
@@ -41,11 +43,8 @@ public class DefaultVoidGenerator implements ChunkGenerator {
                         + 0.06 * overN.GetNoise(16 * posX, 16 * posZ)
                         + 0.03 * overN.GetNoise(32 * posX, 32 * posZ));
                 e = e / (1.00 + 0.50 + 0.25 + 0.13 + 0.06 + 0.03);
-                e = Math.pow(e, 2.85);
-                //e = (1 + e - (Math.sqrt(posX * posX + posZ * posZ) / Math.sqrt(0.5))) / 2;
-                //e = (1 + e - (Math.abs(posX)));
-                //e = Math.round(e * 32) / 32.0;
-                //e = (1 + e - (Math.max(Math.abs(posX),Math.abs(posZ)))) / 2;
+                //e = Math.round(e * 64.0) / 64.0;
+                e = Math.pow(e, 3.25);
 
                 var m = (1.00 * lNoise.GetNoise(1 * posX, 1 * posZ)
                         + 0.75 * lNoise.GetNoise(2 * posX, 2 * posZ)
@@ -55,23 +54,44 @@ public class DefaultVoidGenerator implements ChunkGenerator {
                         + 0.50 * lNoise.GetNoise(32 * posX, 32 * posZ));
                 m = m / (1.00 + 0.75 + 0.33 + 0.33 + 0.33 + 0.50);
 
-                var height = (int) (e * 16) + 64;
+                var height = (int) (e * 64) + 64;
                 Block block = getBlock(e, m);
                 for (int y = 1; y < height; y++) {
                     batch.setBlock(x, y, z, Block.STONE);
                 }
+
                 batch.setBlock(x, height, z, block);
                 batch.setBlock(x, 0, z, Block.BEDROCK);
 
 
+                if (block.isLiquid()) {
+                    water.add(new Pos(x, height, z));
+                }
             }
         }
+        if (!water.isEmpty()) {
+            synchronized (chunkList) {
+                water.addAll(chunkList.stream().filter(pos -> pos.distance(water.get(0)) <= 16).toList());
+            }
+            water.sort(Comparator.comparingInt(Point::blockY).reversed());
+            if (water.get(0) != null) {
+                Pos maxHeight = water.get(0);
+                for (Pos pos : water) {
+                    if (pos.blockY() <= maxHeight.blockY()) {
+                        for (int y = pos.blockY(); y <= maxHeight.blockY(); y++) {
+                            batch.setBlock(pos.blockX(), y, pos.blockZ(), Block.WATER);
+                        }
+                    }
+                }
+                synchronized (chunkList) {
+                    chunkList.add(maxHeight);
+                }
+            }
+        }
+        water.clear();
+        System.out.println(chunkList.size());
     }
 
-    @Override
-    public void fillBiomes(@NotNull Biome[] biomes, int chunkX, int chunkZ) {
-        Arrays.fill(biomes, Biome.PLAINS);
-    }
 
     @Override
     public @Nullable List<ChunkPopulator> getPopulators() {
@@ -91,8 +111,8 @@ public class DefaultVoidGenerator implements ChunkGenerator {
 
         if (e > 0.6) {
             if (m < 0.33) return Block.SAND;
-            if (m < 0.66) return Block.SANDSTONE;
-            return Block.SANDSTONE;
+            if (m < 0.66) return Block.WATER;
+            return Block.SAND;
         }
 
         if (e > 0.3) {

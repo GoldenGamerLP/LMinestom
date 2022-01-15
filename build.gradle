@@ -17,6 +17,7 @@ repositories {
     maven {
         url "https://repo.spongepowered.org/repository/maven-public/"
     }
+    maven { url 'https://repo.cloudnetservice.eu/repository/releases/' }
 }
 
 java {
@@ -26,11 +27,13 @@ java {
 }
 
 dependencies {
-    implementation 'com.github.Minestom:Minestom:-SNAPSHOT'
+    implementation 'com.github.Minestom:Minestom:51abd95bcb'
     implementation "net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT"
-    dependencies {
-        implementation "org.spongepowered:noise:2.0.0-SNAPSHOT"
-    }
+    implementation "org.spongepowered:noise:2.0.0-SNAPSHOT"
+    implementation 'com.github.Articdive:JNoise:3.0.1'
+    implementation 'de.dytanic.cloudnet:cloudnet-driver:3.4.0-RELEASE'
+    implementation 'de.dytanic.cloudnet:cloudnet:3.4.0-RELEASE'
+    implementation 'de.dytanic.cloudnet:cloudnet-bridge:3.4.0-RELEASE'
 }
 
 jar {
