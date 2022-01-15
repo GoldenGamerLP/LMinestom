@@ -17,7 +17,7 @@ public class LMinestomEventDispatcher {
     private final EventNode<Event> eventNode = EventNode.all("LMinestom").setPriority(0);
     private final MiniMessage miniMessage = MiniMessage.get();
     private final Component motd = miniMessage.parse(System.getProperty("lminestom.motd", "LMinestom by GoldenGamer_LP"));
-    private final int maxPlayers = Integer.getInteger("lminestom.server.maxplayers",50);
+    private final int maxPlayers = Integer.getInteger("lminestom.server.maxplayers", 50);
     private final Logger logger = LMinestom.getMainLogger();
 
     public LMinestomEventDispatcher() {

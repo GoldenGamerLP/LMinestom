@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -59,11 +58,10 @@ public class LMinestomConfig {
                     String values = lValues.stream().map(LMinestomDefaultValues::getIdentifier).toList().toString();
                     logger.info(String.format("Adding default values: %s", values));
 
-                    for (LMinestomDefaultValues lValue : lValues) {
-                        properties.put(lValue.getIdentifier(), lValue.getDefaultValue());
-                    }
+                    lValues.forEach(lValue -> properties.put(lValue.getIdentifier(), lValue.getDefaultValue()));
                 }
-                properties.store(fileWriter, "Config File");
+
+                properties.store(fileWriter, "LMinestom Configuration File");
             } catch (IOException e) {
                 logger.error("Something went wrong while Saving the File: ", e);
             }
@@ -91,6 +89,10 @@ public class LMinestomConfig {
                 }
             }
         });
+    }
+
+    public String getConfigEntry(LMinestomDefaultValues config) {
+        return System.getProperty(config.getIdentifier(), config.getDefaultValue());
     }
 
     public boolean createFile() throws IOException {
