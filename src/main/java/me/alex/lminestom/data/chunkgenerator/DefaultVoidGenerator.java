@@ -36,23 +36,30 @@ public class DefaultVoidGenerator implements ChunkGenerator {
                 int posZ = chunkZ * 16 + z;
 
 
-                var e = (1.00 * overN.GetNoise(1 * posX, 1 * posZ)
-                        + 0.50 * overN.GetNoise(2 * posX, 2 * posZ)
-                        + 0.25 * overN.GetNoise(4 * posX, 4 * posZ)
-                        + 0.13 * overN.GetNoise(8 * posX, 8 * posZ)
-                        + 0.06 * overN.GetNoise(16 * posX, 16 * posZ)
-                        + 0.03 * overN.GetNoise(32 * posX, 32 * posZ));
-                e = e / (1.00 + 0.50 + 0.25 + 0.13 + 0.06 + 0.03);
-                //e = Math.round(e * 64.0) / 64.0;
-                e = Math.pow(e, 3.25);
+                var e = 0.0;
+                synchronized (overN) {
+                     e = (overN.GetNoise(1 * posX, 1 * posZ)
+                            + 0.50 * overN.GetNoise(2 * posX, 2 * posZ)
+                            + 0.25 * overN.GetNoise(4 * posX, 4 * posZ)
+                            + 0.13 * overN.GetNoise(8 * posX, 8 * posZ)
+                            + 0.06 * overN.GetNoise(16 * posX, 16 * posZ)
+                            + 0.03 * overN.GetNoise(32 * posX, 32 * posZ));
+                    e = e / (1.00 + 0.50 + 0.25 + 0.13 + 0.06 + 0.03);
+                    //e = Math.round(e * 64.0) / 64.0;
+                    e = Math.pow(e, 3.25);
+                }
 
-                var m = (1.00 * lNoise.GetNoise(1 * posX, 1 * posZ)
-                        + 0.75 * lNoise.GetNoise(2 * posX, 2 * posZ)
-                        + 0.33 * lNoise.GetNoise(4 * posX, 4 * posZ)
-                        + 0.33 * lNoise.GetNoise(8 * posX, 8 * posZ)
-                        + 0.33 * lNoise.GetNoise(16 * posX, 16 * posZ)
-                        + 0.50 * lNoise.GetNoise(32 * posX, 32 * posZ));
-                m = m / (1.00 + 0.75 + 0.33 + 0.33 + 0.33 + 0.50);
+
+                var m = 0.0;
+                synchronized (lNoise) {
+                    m = (lNoise.GetNoise(1 * posX, 1 * posZ)
+                            + 0.75 * lNoise.GetNoise(2 * posX, 2 * posZ)
+                            + 0.33 * lNoise.GetNoise(4 * posX, 4 * posZ)
+                            + 0.33 * lNoise.GetNoise(8 * posX, 8 * posZ)
+                            + 0.33 * lNoise.GetNoise(16 * posX, 16 * posZ)
+                            + 0.50 * lNoise.GetNoise(32 * posX, 32 * posZ));
+                    m = m / (1.00 + 0.75 + 0.33 + 0.33 + 0.33 + 0.50);
+                }
 
                 var height = (int) (e * 64) + 64;
                 Block block = getBlock(e, m);
@@ -111,7 +118,7 @@ public class DefaultVoidGenerator implements ChunkGenerator {
 
         if (e > 0.6) {
             if (m < 0.33) return Block.SAND;
-            if (m < 0.66) return Block.WATER;
+            if (m < 0.66) return Block.SNOW_BLOCK;
             return Block.SAND;
         }
 

@@ -1,6 +1,8 @@
 package me.alex.lminestom.data.defaultworld;
 
 import me.alex.lminestom.data.chunkgenerator.DefaultVoidGenerator;
+import me.alex.lminestom.data.config.LMinestomConfig;
+import me.alex.lminestom.data.config.LMinestomDefaultValues;
 import me.alex.lminestom.start.LMinestom;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.AnvilLoader;
@@ -15,10 +17,11 @@ public class LMinestomDefaultWorld {
     private final Logger logger = LMinestom.getMainLogger();
     private volatile boolean init = false;
     private InstanceContainer instanceContainer;
+    private final LMinestomConfig lMinestomConfig = LMinestom.getDefaultConfig();
 
     public LMinestomDefaultWorld() {
         if (init) {
-            logger.warn("You can only init the Default Class one time");
+            logger.warn("You can only init the Default Class once!");
             return;
         }
         init = true;
@@ -27,10 +30,10 @@ public class LMinestomDefaultWorld {
     public void initDefaultContainer() {
         instanceContainer = MinecraftServer.getInstanceManager().createInstanceContainer();
 
-        if (Boolean.getBoolean("lminestom.customdefaultworld")) {
+        if (Boolean.getBoolean(lMinestomConfig.getConfigEntry(LMinestomDefaultValues.CustomDefaultWorld))) {
             logger.info("Enabled custom default world.");
 
-            String defaultWorldName = System.getProperty("lminestom.customworldfoldername", "default");
+            String defaultWorldName = lMinestomConfig.getConfigEntry(LMinestomDefaultValues.CustomDefaultWorldFolder);
             if (Files.exists(Paths.get(defaultWorldName))) {
                 logger.info("Enabling AnvilLoader!");
                 instanceContainer.setChunkLoader(new AnvilLoader(Paths.get(defaultWorldName)));
