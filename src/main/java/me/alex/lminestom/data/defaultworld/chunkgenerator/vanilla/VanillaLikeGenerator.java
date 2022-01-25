@@ -1,4 +1,4 @@
-package me.alex.lminestom.data.chunkgenerator;
+package me.alex.lminestom.data.defaultworld.chunkgenerator.vanilla;
 
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class DefaultVoidGenerator implements ChunkGenerator {
+public class VanillaLikeGenerator implements ChunkGenerator {
 
     private final LMinestomNoise overN;
     private final LMinestomNoise lNoise;
@@ -20,7 +20,7 @@ public class DefaultVoidGenerator implements ChunkGenerator {
     private final Random Seed;
     private final List<Pos> chunkList = Collections.synchronizedList(new ArrayList<>());
 
-    public DefaultVoidGenerator() {
+    public VanillaLikeGenerator() {
         this.Seed = new Random(22112005);
         this.overN = new LMinestomNoise(LMinestomNoiseType.OverworldTerrain, Seed.nextInt());
         this.lNoise = new LMinestomNoise(LMinestomNoiseType.LandmassTerrain, Seed.nextInt());
@@ -38,7 +38,7 @@ public class DefaultVoidGenerator implements ChunkGenerator {
 
                 var e = 0.0;
                 synchronized (overN) {
-                     e = (overN.GetNoise(1 * posX, 1 * posZ)
+                    e = (overN.GetNoise(1 * posX, 1 * posZ)
                             + 0.50 * overN.GetNoise(2 * posX, 2 * posZ)
                             + 0.25 * overN.GetNoise(4 * posX, 4 * posZ)
                             + 0.13 * overN.GetNoise(8 * posX, 8 * posZ)

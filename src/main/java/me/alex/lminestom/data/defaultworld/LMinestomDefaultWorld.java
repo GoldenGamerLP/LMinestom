@@ -1,8 +1,9 @@
 package me.alex.lminestom.data.defaultworld;
 
-import me.alex.lminestom.data.chunkgenerator.DefaultVoidGenerator;
+import me.alex.lminestom.data.defaultworld.chunkgenerator.vanilla.VanillaLikeGenerator;
 import me.alex.lminestom.data.config.LMinestomConfig;
 import me.alex.lminestom.data.config.LMinestomDefaultValues;
+import me.alex.lminestom.data.defaultworld.chunkgenerator.voidgenerator.DefaultVoidGenerator;
 import me.alex.lminestom.start.LMinestom;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.AnvilLoader;
@@ -15,9 +16,8 @@ import java.nio.file.Paths;
 public class LMinestomDefaultWorld {
 
     private final Logger logger = LMinestom.getMainLogger();
-    private volatile boolean init = false;
-    private InstanceContainer instanceContainer;
     private final LMinestomConfig lMinestomConfig = LMinestom.getDefaultConfig();
+    private volatile boolean init = false;
 
     public LMinestomDefaultWorld() {
         if (init) {
@@ -28,47 +28,35 @@ public class LMinestomDefaultWorld {
     }
 
     public void initDefaultContainer() {
-        instanceContainer = MinecraftServer.getInstanceManager().createInstanceContainer();
+        if(Boolean.getBoolean(LMinestomDefaultValues.EnableDefaultInstance.getIdentifier())) {
+            InstanceContainer container = MinecraftServer.getInstanceManager().createInstanceContainer();
 
-        if (Boolean.getBoolean(lMinestomConfig.getConfigEntry(LMinestomDefaultValues.CustomDefaultWorld))) {
-            logger.info("Enabled custom default world.");
+            logger.info("Trying to enable Default Instance.");
 
-            String defaultWorldName = lMinestomConfig.getConfigEntry(LMinestomDefaultValues.CustomDefaultWorldFolder);
-            if (Files.exists(Paths.get(defaultWorldName))) {
-                logger.info("Enabling AnvilLoader!");
-                instanceContainer.setChunkLoader(new AnvilLoader(Paths.get(defaultWorldName)));
-            } else {
-                logger.info("Enabled custom default world but found no world, using default world generator.");
-                instanceContainer.setChunkGenerator(new DefaultVoidGenerator());
+            String chunkGenerator = lMinestomConfig.getConfigEntry(LMinestomDefaultValues.DefaultInstanceChunkGenerator);
+            switch (chunkGenerator) {
+                case "void":
+                    container.setChunkGenerator(new DefaultVoidGenerator());
+                    logger.info("Using Void ChunkGenerator for Default instance.");
+                    break;
+                case "vanilla":
+                    container.setChunkGenerator(new VanillaLikeGenerator());
+                    logger.info("Using Vanilla Like ChunkGenerator for Default instance.");
+                    logger.info("VanillaLikeGenerator is heavy and not optimized yet!");
+                    break;
+                case "own":
+                    String world = lMinestomConfig.getConfigEntry(LMinestomDefaultValues.DefaultInstanceFolder);
+                    container.setChunkLoader(new AnvilLoader(Paths.get(world)));
+                    logger.info("Enabled AnvilChunLoader with world {}",world);
+                default:
+                    logger.warn("{} is not a valid chunkgenerator!",chunkGenerator);
+                    container.setChunkGenerator(new DefaultVoidGenerator());
+                    break;
             }
-        } else {
-            logger.info("Enabling default Chunk Generator");
-            instanceContainer.setChunkGenerator(new DefaultVoidGenerator());
+
+            container.enableAutoChunkLoad(true);
+            LMinestom.setDefaultInstance(container);
+
         }
-
-        /*if(Boolean.getBoolean("lminestom.lobby.mode") && Boolean.getBoolean("lminestom.customdefaultworld")) {
-            logger.info("Enabling Lobby Mode (Custom World Loading) (Experimental, you at own risk!)");
-            int radius = Integer.getInteger("lminestom.lobby.loadradius",0);
-            if(radius != 0) {
-                instanceContainer.enableAutoChunkLoad(false);
-                logger.info("Loading Lobby world in radius of ({})",radius);
-
-                for(int x = -radius; x <= radius; x++) {
-                    for(int z = -radius; z <= radius; z++) {
-                        logger.info("Loading Chunk: X: {}, Z: {}",x,z);
-                        instanceContainer.loadChunk(x,z);
-                    }
-                }
-                instanceContainer.getWorldBorder().setCenter(0,0);
-                instanceContainer.getWorldBorder().setDiameter(radius * 2 * 16 / 2.2);
-            } else {
-                logger.info("You cannot use a smaller load radius value than 1!");
-                instanceContainer.enableAutoChunkLoad(true);
-            }
-        } else {
-            logger.info("Enabled Auto Chunk Loading");
-            instanceContainer.enableAutoChunkLoad(true);
-        }*/
-        LMinestom.setDefaultInstance(instanceContainer);
     }
 }

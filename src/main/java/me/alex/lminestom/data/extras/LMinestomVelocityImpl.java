@@ -18,12 +18,12 @@ public class LMinestomVelocityImpl {
 
             logger.info("Trying to enable VelocitySupport.");
             if (secret == null) {
-                logger.info("Velocity Support enabled but no secret key!");
+                logger.warn("Velocity Support enabled but no secret key!");
                 return;
             }
 
             if (Boolean.getBoolean("minestom.online-mode.enabled")) {
-                logger.info("You enabled online mode and velocity/proxy mode, please disabled online mode to use velocity mode.");
+                logger.warn("You enabled online mode and velocity/proxy mode, please disabled online mode to use velocity mode.");
                 return;
             }
 

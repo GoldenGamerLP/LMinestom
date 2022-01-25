@@ -2,4 +2,10 @@
 
 # LMinestom is a ready-to-start Minecraft Server which uses Minestom to run.
 
-# LMinestom uses Java 17 and runs Minecraft Version 1.18
+# Minestom Features
+- Own Config with 10+ settings
+- CloudNet Implementation
+- Own Commands (/stop,/extensionmanager)
+- Easy to set up
+- Configurable Default World (Default - Instance)
+- Pre-Made World Generation

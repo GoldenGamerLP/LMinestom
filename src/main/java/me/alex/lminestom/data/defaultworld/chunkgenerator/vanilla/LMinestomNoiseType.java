@@ -1,4 +1,4 @@
-package me.alex.lminestom.data.chunkgenerator;
+package me.alex.lminestom.data.defaultworld.chunkgenerator.vanilla;
 
 public class LMinestomNoiseType {
 

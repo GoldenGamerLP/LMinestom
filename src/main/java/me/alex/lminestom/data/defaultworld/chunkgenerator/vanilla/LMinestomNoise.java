@@ -1,4 +1,4 @@
-package me.alex.lminestom.data.chunkgenerator;
+package me.alex.lminestom.data.defaultworld.chunkgenerator.vanilla;
 
 
 import de.articdive.jnoise.JNoise;
@@ -26,7 +26,7 @@ public class LMinestomNoise {
     }
 
     public double GetNoise(double x, double y) {
-        return (noise.getNoise(x,y) / 2) + 0.5;
+        return (noise.getNoise(x, y) / 2) + 0.5;
     }
 
     public double GetNoise(double x, double y, double z) {

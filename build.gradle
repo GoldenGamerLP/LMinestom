@@ -34,6 +34,8 @@ dependencies {
     implementation 'de.dytanic.cloudnet:cloudnet-driver:3.4.0-RELEASE'
     implementation 'de.dytanic.cloudnet:cloudnet:3.4.0-RELEASE'
     implementation 'de.dytanic.cloudnet:cloudnet-bridge:3.4.0-RELEASE'
+    implementation 'org.slf4j:slf4j-api:1.7.30'
+    implementation 'org.slf4j:slf4j-simple:1.7.30'
 }
 
 jar {

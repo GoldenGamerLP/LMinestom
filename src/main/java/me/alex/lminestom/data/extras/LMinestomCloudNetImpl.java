@@ -10,7 +10,10 @@ import org.slf4j.Logger;
 public class LMinestomCloudNetImpl {
 
     private static final Logger logger = LMinestom.getMainLogger();
+    private static volatile Boolean isEnabled = false;
 
+    //CloudNet Implementation
+    //Getting Port for this Service and overriding it to the port
     public static void initCloudNetImpl() {
         if (Boolean.getBoolean(LMinestomDefaultValues.CloudnetImpl.getIdentifier())) {
             logger.info("Trying to enabled CloudNet Implementation.");
@@ -19,10 +22,15 @@ public class LMinestomCloudNetImpl {
                 return;
             }
 
+            if (Boolean.getBoolean(LMinestomDefaultValues.OnlineMode.getIdentifier())) {
+                logger.warn("You can only enable CloudNet Implementation if your in Offline Mode.");
+                return;
+            }
+
 
             CloudNetDriver cloudNetDriver = CloudNetDriver.getInstance();
             if (cloudNetDriver == null) {
-                logger.error("There was no CloudNet found, disabling CloudNet Implementation.");
+                logger.warn("There was no CloudNet found, disabling CloudNet Implementation.");
                 return;
             }
 
@@ -30,9 +38,10 @@ public class LMinestomCloudNetImpl {
             ServiceInfoSnapshot serviceInfoSnapshot = cloudNetDriver.getCloudServiceProvider().getCloudServiceByName(currentServer);
 
             if (!MinecraftServer.isStarted() && serviceInfoSnapshot.getConfiguration() != null) {
+                //Getting Port -> Setting Port and Printing Message
                 int port = serviceInfoSnapshot.getConfiguration().getPort();
                 System.setProperty(LMinestomDefaultValues.SystemPort.getIdentifier(), port + "");
-                logger.warn("Enabled CloudNet Server Implementation. Overriding port to {}!", port);
+                logger.info("Enabled CloudNet Server Implementation. Overriding port to {}!", port);
             } else logger.warn("Something went wrong during CloudNet impl start up.");
         }
     }

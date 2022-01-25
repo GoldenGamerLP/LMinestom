@@ -14,11 +14,12 @@ public enum LMinestomDefaultValues {
     OnlineMode("online-mode", "true"),
     CloudnetImpl("cloudnet-impl-enabled", "false"),
     ExtensionManager("extension-manager-enabled", "true"),
-    VelocityModeEnabled("velocity.enabled", "true"),
+    VelocityModeEnabled("velocity.enabled", "false"),
     VelocitySecretKey("velocity.secret", "yourKey"),
     ServerMotd("motd", "This is L-Minestom!"),
-    CustomDefaultWorld("custom-default-world.enabled", "false"),
-    CustomDefaultWorldFolder("custom-default-world.folder", "yourFolder");
+    EnableDefaultInstance("default.instance.enabled","true"),
+    DefaultInstanceChunkGenerator("default.instance.chunkgenerator","void"),
+    DefaultInstanceFolder("default.instance.folder","folder");
 
 
     private final String identifier;

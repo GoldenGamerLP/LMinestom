@@ -3,6 +3,7 @@ package me.alex.lminestom.data.extras.commands;
 import me.alex.lminestom.start.LMinestom;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Template;
 import net.minestom.server.MinecraftServer;
@@ -29,12 +30,12 @@ public class LMinestomExtensionManager extends Command {
     private final Logger logger = LMinestom.getMainLogger();
 
     private final String listTitleNothingLoaded = "<gray>There were <red>no <gray>extensions loaded.";
-    private final String listTitle = "<gray>There were <green><extensions><green> extensions loaded: \n";
-    private final String extensionInfo = "<gray>, <hover:show_text:'<extensioninfo>'><color><extenionname>";
+    private final String listTitle = "<gray>There were <green><extensions><gray> extensions loaded: \n";
+    private final String extensionInfo = "<gray><hover:show_text:'<extensioninfo>'><namedtextcolor><extenionname><gray>,";
     private final String extensionHoverInfo = """
             Name: <name>\s
             Author: <author>\s
-            Is loaded: <loaded>\s
+            Entry-Point: <entrypoint>\s
             Depend: <depend>""";
 
 
@@ -68,7 +69,7 @@ public class LMinestomExtensionManager extends Command {
                 component = miniMessage.parse(extensionHoverInfo,
                         Template.of("name", origin.getName()),
                         Template.of("author", Arrays.toString(origin.getAuthors())),
-                        Template.of("loaded", "true"),
+                        Template.of("entrypoint", origin.getEntrypoint()),
                         Template.of("depend", Arrays.toString(extension.getDependents().toArray())));
             }
             return component;
@@ -85,19 +86,20 @@ public class LMinestomExtensionManager extends Command {
                 builder.append(miniMessage.parse(listTitleNothingLoaded));
             } else {
                 builder.append(miniMessage.parse(listTitle, Template.of("extensions", Component.text(extensions.size()))));
-                for (Extension extension : extensions) {
 
+                for (Extension extension : extensions) {
                     DiscoveredExtension origin = extension.getOrigin();
 
                     Component exHoverInfo = miniMessage.parse(extensionHoverInfo,
                             Template.of("name", origin.getName()),
                             Template.of("author", Arrays.toString(origin.getAuthors())),
-                            Template.of("loaded", "true"),
+                            Template.of("entrypoint", origin.getEntrypoint()),
                             Template.of("depend", Arrays.toString(extension.getDependents().toArray())));
 
                     Component exInfo = miniMessage.parse(extensionInfo,
                             Template.of("extensioninfo", exHoverInfo),
-                            Template.of("extensionname", origin.getName()));
+                            Template.of("extenionname", origin.getName()),
+                            Template.of("namedtextcolor", Component.text("").color(NamedTextColor.GREEN)));
 
                     builder.append(exInfo);
                 }
